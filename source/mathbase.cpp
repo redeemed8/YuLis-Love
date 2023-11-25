@@ -498,7 +498,7 @@ std::string Inverse_element(int a, int m) {
 	}
 	int s, t;
 	ExtendedEuclidean(a, m, s, t);
-	return std::to_string(s % m);
+	return std::to_string(s % m > 0 ? s % m : m + (s % m));
 }
 
 //	求解一次同余式,形如 ax ≡ b (mod m)
@@ -506,11 +506,13 @@ std::string Congruence_1(int a, int b, int m) {
 	//	判断参数条件
 	if (m < 1)	return "# The value of m should be a positive integer!";
 	if (a % m == 0)	return"# The parameter m is divisible by a! No solution!";
+	b = b < 0 ? m + b : b;
 	std::string a_str = std::to_string(a);
 	std::string b_str = std::to_string(b);
 	std::string m_str = std::to_string(m);
 
 	std::string a_m_str = MaxCommonFactor(a_str, m_str);
+
 	if (a_m_str[0] == '#')	return a_m_str;
 
 	int a_m = std::stoi(a_m_str);
@@ -528,7 +530,7 @@ std::string Congruence_1(int a, int b, int m) {
 		std::string add1 = multiply(b_am, ie);
 		std::string add2 = multiply(m_am, std::to_string(i));
 		std::string Total = add(add1, add2);
-		
+
 		std::string shang = division(Total, m);
 		std::string j = multiply(shang, std::to_string(m));
 		std::string ret = subtraction(Total, j);
@@ -537,5 +539,6 @@ std::string Congruence_1(int a, int b, int m) {
 	}
 	return rets + " (mod " + m_str + ")";
 }
+
 
 
