@@ -30,10 +30,10 @@ void Start(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
 
-	//LoadConfigFile();		//	最后再开启
+	LoadConfigFile();		//	最后再开启
 
 	HideCursor();
-	 
+	
 	Start(argc, argv);		//	启动程序
 
 	PauseExit(0);			//	退出程序

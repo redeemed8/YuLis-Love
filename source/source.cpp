@@ -12,7 +12,11 @@ std::map <std::string, int> FuncArgsMap = {
 	{"Bezout",2},
 	{"Factor",1},
 	{"Eular",1},
-	{"Congruence_1",3}
+	{"Congruence_1",3},
+	{"Add",2},
+	{"Mul",2},
+	{"Div",2},
+	{"Div-p",2}
 };
 
 std::map<std::string, int> FuncMap = {
@@ -25,7 +29,11 @@ std::map<std::string, int> FuncMap = {
 	{"Bezout",6},
 	{"Factor",7},
 	{"Eular",8},
-	{"Congruence_1",9}
+	{"Congruence_1",9},
+	{"Add",10},
+	{"Mul",11},
+	{"Div",12},
+	{"Div-p",13}
 };
 
 std::vector<std::any> Vector;
@@ -393,6 +401,92 @@ void ExecuteCommand(std::string command) {
 		std::string r = Congruence_1(std::stoi(abm[0]), std::stoi(abm[1]), std::stoi(abm[2]));
 		std::any a = r;
 		(*p).AddResults(a);
+	}
+	else if (FuncId == 10) {
+		std::string c1 = GetCommandArgs(0), c2 = GetCommandArgs(1);
+		std::string isMatch1 = CheckStrIsNumber(c1);
+		if (isMatch1[0] == '#') {
+			Red(isMatch1);
+			PauseExit(1);
+		}
+		std::string isMatch2 = CheckStrIsNumber(c2);
+		if (isMatch2[0] == '#') {
+			Red(isMatch2);
+			PauseExit(1);
+		}
+		(*p).SetEnd(1.00f);
+		RunUpdateProcess(p);
+		flag = true;
+
+		std::string r = add(isMatch1, isMatch2);
+		std::any a = r;
+		(*p).AddResults(a);
+	}
+	else if (FuncId == 11) {
+		std::string c1 = GetCommandArgs(0), c2 = GetCommandArgs(1);
+		std::string isMatch1 = CheckStrIsNumber(c1);
+		if (isMatch1[0] == '#') {
+			Red(isMatch1);
+			PauseExit(1);
+		}
+		std::string isMatch2 = CheckStrIsNumber(c2);
+		if (isMatch2[0] == '#') {
+			Red(isMatch2);
+			PauseExit(1);
+		}
+		(*p).SetEnd(1.00f);
+		RunUpdateProcess(p);
+		flag = true;
+
+		std::string r = multiply(isMatch1, isMatch2);
+		std::any a = r;
+		(*p).AddResults(a);
+	}
+	else if (FuncId == 12) {
+		std::string c1 = GetCommandArgs(0), c2 = GetCommandArgs(1);
+		std::string isMatch1 = CheckStrIsNumber(c1);
+		if (isMatch1[0] == '#') {
+			Red(isMatch1);
+			PauseExit(1);
+		}
+		std::string isMatch2 = CheckStrIsNumber(c2);
+		if (isMatch2[0] == '#') {
+			Red(isMatch2);
+			PauseExit(1);
+		}
+		(*p).SetEnd(2.00f);
+		RunUpdateProcess(p);
+		flag = true;
+
+		std::string q, r;
+		std::tie(q, r) = division2(isMatch1, isMatch2);
+		std::any a1 = q;
+		std::any a2 = r;
+		(*p).AddResults(a1);
+		(*p).AddResults(a2);
+	}
+	else if (FuncId == 13) {
+		std::string c1 = GetCommandArgs(0), c2 = GetCommandArgs(1);
+		std::string isMatch1 = CheckStrIsNumber(c1);
+		if (isMatch1[0] == '#') {
+			Red(isMatch1);
+			PauseExit(1);
+		}
+		std::string isMatch2 = CheckStrIsNumber(c2);
+		if (isMatch2[0] == '#') {
+			Red(isMatch2);
+			PauseExit(1);
+		}
+		(*p).SetEnd(2.00f);
+		RunUpdateProcess(p);
+		flag = true;
+
+		std::string q, r;
+		std::tie(q, r) = division3(isMatch1, isMatch2);
+		std::any a1 = q;
+		std::any a2 = r;
+		(*p).AddResults(a1);
+		(*p).AddResults(a2);
 	}
 	else {
 		Red("[ Error ]: The execution process is abnormal! \n");

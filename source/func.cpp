@@ -27,6 +27,12 @@ void help() {
 	std::cout << name << " --help                                     查看帮助文档\n";
 	std::cout << name << " --ChUpper str1 str2 [...]                  将字符串转换为大写\n";
 	std::cout << name << " --ChLower str1 str2 [...]                  将字符串转换为小写\n";
+	std::cout << "\n";
+	std::cout << name << " --Add                                      高精度加法 加数可正可负\n";
+	std::cout << name << " --Mul                                      高精度乘法 乘数可正可负\n";
+	std::cout << name << " --Div                                      高精度除法 参数可正可负 标准余数\n";
+	std::cout << name << " --Div-p                                    高精度除法 参数可正可负 恒正余数\n";
+	std::cout << "\n";
 	std::cout << name << " --Radix   a-to-b  number                   将a进制数转换为b进制\n";
 	std::cout << name << " --MCF(MaxCommonFactor) num1 num2           求num1和num2的最大公因数\n";
 	std::cout << name << " --MCM(MinCommonMultiples) num1 num2        求num1和num2的最小公倍数\n";

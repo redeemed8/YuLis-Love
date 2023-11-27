@@ -107,6 +107,13 @@ int Get_i_();																	//	获取进度参数i,方便操作
 std::string factorize(long long num);										    //	分解因数
 std::string Eular(std::string num);												//	欧拉函数
 std::string Congruence_1(int a, int b, int m);									//	求解一次同余式,形如 ax ≡ b (mod m)
+std::string add(std::string num1, std::string num2);							//	高精加
+std::string subtraction(std::string num1, std::string num2);					//	高精减
+std::string multiply(std::string num1, std::string num2);						//	高精乘
+
+//	-------------- mathsenior -----------------
+std::tuple<std::string, std::string> division2(std::string dividend, std::string divisor);	//	进阶高精除
+std::tuple<std::string, std::string> division3(std::string dividend, std::string divisor);	//	进阶余正高精除
 
 //	--------- config ---------
 bool LoadConfigFile();			//	加载配置文件信息进内存

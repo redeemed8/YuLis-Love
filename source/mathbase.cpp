@@ -32,34 +32,41 @@ std::string CheckRadixStr(std::string radix, std::string radixNum) {
 	return "";
 }
 
-//	高精度10进制字符串加法
-std::string add(const std::string& num1, const std::string& num2) {
-	std::string result;
-
-	// 将两个数字反转，从个位开始相加
-	std::string reversedNum1(num1.rbegin(), num1.rend());
-	std::string reversedNum2(num2.rbegin(), num2.rend());
-
-	int carry = 0; // 进位
-
-	// 逐位相加
-	size_t end = reversedNum1.length() > reversedNum2.length() ? reversedNum1.length() : reversedNum2.length();
-	for (size_t i = 0; i < end || carry; ++i) {
-		int digit1 = i < reversedNum1.length() ? reversedNum1[i] - '0' : 0;
-		int digit2 = i < reversedNum2.length() ? reversedNum2[i] - '0' : 0;
-
-		int sum = digit1 + digit2 + carry;
-		carry = sum / 10;
-
-		// 将当前位的数字加到结果字符串的前面
-		result.insert(result.begin(), '0' + sum % 10);
+//	比较两个 数字 字符串内的数字  可正可负
+//	str1大于str1 返回1， str1小于str2 返回-1， str1等于str2返回0
+int NumstrGreater2(std::string str1, std::string str2) {
+	if (str1[0] == '-' && str2[0] != '-')   return -1;		//	1负2正 --> 1小  返回 -1
+	if (str1[0] != '-' && str2[0] == '-')	return 1;		//	1正2负 --> 1大  返回  1
+	bool rollback = false;
+	if (str1[0] == '-' && str2[0] == '-') {		//	同时为 负数
+		rollback = true;
+		str1 = str1.substr(1, str1.size() - 1);
+		str2 = str2.substr(1, str2.size() - 1);
 	}
 
-	return result;
+	if (str1 == str2)	return 0;
+	if (str1.size() > str2.size())	return rollback ? (-1) * 1 : 1;
+	if (str1.size() < str2.size())	return rollback ? (-1) * (-1) : -1;
+	//	长度相等，逐位比较
+	for (int i = 0; i < str1.size(); ++i) {
+		if (str1[i] > str2[i])	return rollback ? (-1) * 1 : 1;
+		if (str1[i] < str2[i])	return rollback ? (-1) * (-1) : -1;
+	}
+	return 0;
 }
 
-//	高精度10进制字符串减法
-std::string subtraction(std::string& num1, std::string& num2) {
+//	高精度10进制字符串减法		两个参数必须为正
+std::string subtraction(std::string num1, std::string num2) {
+	int r = NumstrGreater2(num1, num2);
+	if (r == 0)	return "0";
+	bool rollback = false;
+	if (r == -1) {
+		rollback = true;
+		std::string t = num1;
+		num1 = num2;
+		num2 = t;
+	}
+
 	std::string result;
 	int borrow = 0;
 	// 对齐两个数字的长度
@@ -85,13 +92,61 @@ std::string subtraction(std::string& num1, std::string& num2) {
 	// 去除结果前面的多余的0
 	size_t pos = result.find_first_not_of('0');
 	if (pos != std::string::npos) {
-		return result.substr(pos);
+		return rollback ? "-" + result.substr(pos) : result.substr(pos);
 	}
 	return "0";
 }
 
-//	高精度10进制字符串乘法
-std::string multiply(const std::string& num1, const std::string& num2) {
+//	高精度10进制字符串加法	可正可负
+std::string add(std::string num1, std::string num2) {
+	bool rollback = false;
+	if (num1[0] == '-' && num2[0] != '-') {
+		//	1负2正		-3 + 2  -->  2 - 3
+		return subtraction(num2, num1.substr(1, num1.size() - 1));
+	}
+	else if (num1[0] != '-' && num2[0] == '-') {
+		//	1正2负	1 + -2  -->  1 - 2
+		return subtraction(num1, num2.substr(1, num2.size() - 1));
+	}
+	else if (num1[0] == '-' && num2[0] == '-') {
+		//	都负
+		rollback = true;
+		num1 = num1.substr(1, num1.size() - 1);
+		num2 = num2.substr(1, num2.size() - 1);
+	}
+
+	std::string result;
+
+	// 将两个数字反转，从个位开始相加
+	std::string reversedNum1(num1.rbegin(), num1.rend());
+	std::string reversedNum2(num2.rbegin(), num2.rend());
+
+	int carry = 0; // 进位
+
+	// 逐位相加
+	size_t end = reversedNum1.length() > reversedNum2.length() ? reversedNum1.length() : reversedNum2.length();
+	for (size_t i = 0; i < end || carry; ++i) {
+		int digit1 = i < reversedNum1.length() ? reversedNum1[i] - '0' : 0;
+		int digit2 = i < reversedNum2.length() ? reversedNum2[i] - '0' : 0;
+
+		int sum = digit1 + digit2 + carry;
+		carry = sum / 10;
+
+		// 将当前位的数字加到结果字符串的前面
+		result.insert(result.begin(), '0' + sum % 10);
+	}
+
+	return rollback ? "-" + result : result;
+}
+
+//	高精度10进制字符串乘法	可正可负
+std::string multiply(std::string num1, std::string num2) {
+	bool n1 = num1[0] == '-' ? true : false;
+	bool n2 = num2[0] == '-' ? true : false;
+	bool rollback = n1 ^ n2;
+	if (num1[0] == '-')  num1 = num1.substr(1, num1.size() - 1);
+	if (num2[0] == '-')  num2 = num2.substr(1, num2.size() - 1);
+
 	int len1 = num1.size();
 	int len2 = num2.size();
 	std::string result(len1 + len2, '0');
@@ -111,7 +166,7 @@ std::string multiply(const std::string& num1, const std::string& num2) {
 	// 去除结果前面的多余的0
 	size_t pos = result.find_first_not_of('0');
 	if (pos != std::string::npos) {
-		return result.substr(pos);
+		return rollback ? "-" + result.substr(pos) : result.substr(pos);
 	}
 
 	return "0";
@@ -278,10 +333,12 @@ std::string MaxCommonFactor(std::string& num1, std::string& num2) {
 	AbsNumstr(num2);
 	if (num1 == "0" && num2 == "0")
 		return "# (0, 0)未定义!";
-	else if (num1 == "1" || num1 == "0")
+	else if (num1 == "0")
 		return num2;
-	else if (num2 == "1" || num2 == "0")
+	else if (num2 == "0")
 		return num1;
+	else if (num1 == "1" || num2 == "1")
+		return "1";
 	std::string large, tiny;
 	//	取大数作为 (a, b)中的 a，小数作为 b
 	if (NumstrGreater(num1, num2) == 1) {
@@ -516,6 +573,7 @@ std::string Congruence_1(int a, int b, int m) {
 	if (a_m_str[0] == '#')	return a_m_str;
 
 	int a_m = std::stoi(a_m_str);
+	std::cout << "解数为 = " << a_m << "\n\n";
 
 	//	求逆元
 	std::string ie = Inverse_element(a / a_m, m / a_m);
@@ -526,6 +584,9 @@ std::string Congruence_1(int a, int b, int m) {
 	std::string rets = "x ≡ ";
 	std::string b_am = std::to_string(b / a_m);
 	std::string m_am = std::to_string(m / a_m);
+
+
+
 	for (int i = 0; i < a_m; ++i) {
 		std::string add1 = multiply(b_am, ie);
 		std::string add2 = multiply(m_am, std::to_string(i));
